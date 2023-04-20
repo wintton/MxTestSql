@@ -72,7 +72,7 @@ public class Connection {
         System.out.println("执行：" + sql);
         Integer result = updateDataResult.get(sql);
         System.out.println("执行结果：" + result);
-        return result;
+        return result == null?0:result;
     }
 
 

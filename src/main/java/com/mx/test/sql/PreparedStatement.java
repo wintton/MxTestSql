@@ -82,5 +82,16 @@ public  class PreparedStatement {
         return this.sqlConn.doSqlQuery(sql);
     }
 
+    public void setObject(int index, Object o) {
+        if(o instanceof Integer){
+            setInt(index,(int) o);
+        } else if(o instanceof Float){
+            setFloat(index,(float) o);
+        }  else if(o instanceof Double){
+            setDouble(index,(double) o);
+        } else if(o instanceof String){
+            setString(index, o.toString());
+        }
+    }
 }
 

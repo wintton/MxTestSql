@@ -1,49 +1,93 @@
 package com.mx;
 
+import com.mx.limit.LimitRequestUtil;
 import com.mx.test.sql.Connection;
 import com.mx.test.sql.PreparedStatement;
 import com.mx.test.sql.ResultSet;
+import net.sf.json.JSONObject;
+
+import java.util.Calendar;
 
 public class Main {
 
+    public volatile static int runCount = 0;
+    public volatile static int cancelCount = 0;
+
     public static void main(String[] args) {
 
-        Connection connection = new Connection();
-
-        //配置查询
-        connection.addQueryResult("select name,phone from user","小明,110");
-
-        //支持分析直接从面板 拷贝出来的数据
-        connection.parseQueryResult("select name,phone from user2",
-                "| 06d9706b92904dadb5022916edbdf667 | 183199  \n" +
-                        "| 0ec005bb835c457a94ac232bc65bc2ca | 182911 \n"
-        );
-        //配置更新结果
-        connection.putUpdateResult("update user set name = '1' from user",1);
 
 
-        PreparedStatement ps = connection.prepareStatement("update user set name = ? from user");
+//        Connection sqlConn = new Connection();
+//
+//        //配置查询
+//        sqlConn.addQueryResult("select sum(endtime - starttime) from wx_session_table where devmac = '1F3E5589A21D' and  createtime > 1672502400 and curstate = 2","21353");
+//
+//
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.set(Calendar.MONTH,0);
+//        calendar.set(Calendar.DATE,1);
+//        calendar.set(Calendar.HOUR_OF_DAY,0);
+//        calendar.set(Calendar.MINUTE,0);
+//        calendar.set(Calendar.SECOND,0);
+//        long thisYearStartTime = calendar.getTimeInMillis() / 1000;
+//
+//        String strDevid = "1F3E5589A21D";
+//
+//        PreparedStatement ps = sqlConn.prepareStatement("select sum(endtime - starttime) from wx_session_table where devmac = ? and  createtime > ? and curstate = 2");
+//        ps.setString(1,strDevid);
+//        ps.setLong(2,thisYearStartTime);
+//
+//        ResultSet resultSet = ps.executeQuery();
+//
+//        int useTimeInt = 0;
+//
+//        while (resultSet.next()){
+//            useTimeInt = resultSet.getInt(1);
+//        }
+//
+//       String useTimeStr = (useTimeInt / 3600) + "时" + (useTimeInt % 3600 / 60) + "分钟" + (useTimeInt % 60) + "秒";
+//        System.out.println(useTimeStr);
+//
+//        JSONObject paramJson = new JSONObject();
+//        paramJson.put("masteruid","strMasterUid");
+//        paramJson.put("id",10);
+//        paramJson.put("black_user",1);
 
-        ps.setString(1,"1");
+        LimitRequestUtil limitRequestUtil = new LimitRequestUtil(100,LimitRequestUtil.NO_WAIT);
 
-        int result = ps.executeUpdate();
+        int workCount = 1000;
+        runCount = 0;
+        cancelCount = 0;
 
-        ps = connection.prepareStatement("select name,phone from user");
+        for(int index = 0;index < workCount;index++){
 
-        ResultSet resultSet = ps.executeQuery();
+            int finalIndex = index;
 
-        while (resultSet.next()){
+            new Thread(new Runnable() {
+                int curIndex = finalIndex;
+                @Override
+                public void run() {
+                    if(limitRequestUtil.addCount()){
+                        runCount++;
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
 
+                        }
+                        limitRequestUtil.reduceCount();
+                    } else {
+                        cancelCount++;
+                    }
+                    System.out.println("执行：" + runCount + " 取消：" + cancelCount);
+                }
+            }).start();
         }
 
-        ps = connection.prepareStatement("select name,phone from user2");
 
-        resultSet = ps.executeQuery();
-
-        while (resultSet.next()){
-
-        }
     }
+
+
+
 
 
 }
