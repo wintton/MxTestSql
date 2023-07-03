@@ -16,6 +16,7 @@ public class LimitRequestUtil {
     public LimitRequestUtil(int maxCount){
         this.maxCount = maxCount;
         this.waitTime = NO_WAIT;
+
     }
 
     /**

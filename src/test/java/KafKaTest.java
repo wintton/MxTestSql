@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.logging.Logger;
 
 public class KafKaTest {
 
@@ -17,7 +18,8 @@ public class KafKaTest {
 
     @Test
     public void doTestJuc(){
-
+        Logger logger = Logger.getLogger(this.getClass().getName());
+        logger.info("Hello");
     }
 
     @Test

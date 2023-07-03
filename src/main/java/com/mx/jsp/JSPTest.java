@@ -20,6 +20,7 @@ public class JSPTest extends HttpJspBase implements JspSourceDependent, JspSourc
     HashMap<Long,Long> timeMap = new HashMap<Long,Long>();
 
     public void jspInit(){
+
         System.out.println("jspInit");
         while(isRun){
             timeMap.put(System.currentTimeMillis(),System.currentTimeMillis());
@@ -86,6 +87,7 @@ public class JSPTest extends HttpJspBase implements JspSourceDependent, JspSourc
                 }
             }
         }
+
         return _el_expressionfactory;
     }
 
@@ -101,6 +103,7 @@ public class JSPTest extends HttpJspBase implements JspSourceDependent, JspSourc
     }
 
     public void _jspInit() {
+
     }
 
     public void _jspDestroy() {
@@ -115,6 +118,7 @@ public class JSPTest extends HttpJspBase implements JspSourceDependent, JspSourc
             return;
         }
 
+
         final javax.servlet.jsp.PageContext pageContext;
         final javax.servlet.ServletContext application;
         final javax.servlet.ServletConfig config;
@@ -122,9 +126,8 @@ public class JSPTest extends HttpJspBase implements JspSourceDependent, JspSourc
         final java.lang.Object page = this;
         javax.servlet.jsp.JspWriter _jspx_out = null;
         javax.servlet.jsp.PageContext _jspx_page_context = null;
-
-
         try {
+
             response.setContentType("text/html; charset=UTF-8");
             pageContext = _jspxFactory.getPageContext(this, request, response,
                     null, false, 8192, true);
@@ -138,6 +141,10 @@ public class JSPTest extends HttpJspBase implements JspSourceDependent, JspSourc
             out.write('\n');
             out.write('\n');
             out.write('\n');
+
+            org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "header.jsp", out, true);
+
+            org.apache.jasper.runtime.HttpJspBase httpJspBase = this;
 
             ServletContext servletContext = request.getServletContext();
             servletContext.log("hello Wolrd");

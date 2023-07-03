@@ -1,6 +1,5 @@
 package com.mx.proxy;
 
-import java.lang.reflect.Proxy;
 
 public class Test {
 
