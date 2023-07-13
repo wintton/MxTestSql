@@ -9,6 +9,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="EurekaServer" target="1.8" />
       <module name="Test" target="1.8" />
     </bytecodeTargetLevel>
   </component>

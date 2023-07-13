@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="allatori">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/allatori.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/allatori-annotations.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

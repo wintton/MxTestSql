@@ -26,6 +26,7 @@ public class TestClass {
     @Test
     public void doTest() throws Exception {
 
+
         JSONArray array = new JSONArray();
 
         HashMap<Integer,Integer> gidMap = new HashMap<Integer,Integer>();
@@ -390,7 +391,6 @@ public class TestClass {
             ps.executeUpdate();
 
         } else {
-
             StringBuffer cicdBuffer = new StringBuffer();
             for(int index = 0;index < userlistArray.size();index++){
                 cicdBuffer.append("," + userlistArray.getJSONObject(index).getInt("cicd"));

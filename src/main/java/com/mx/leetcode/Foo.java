@@ -8,10 +8,7 @@ public class Foo {
     Semaphore semaphore = new Semaphore(0);
     Semaphore semaphore1 = new Semaphore(0);
 
-    CountDownLatch countDownLatch = new CountDownLatch(10);
-
     public Foo(){
-        countDownLatch.countDown();
 
     }
 
