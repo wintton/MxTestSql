@@ -1,13 +1,30 @@
 package com.mx.mxmq;
 
 
+import net.sf.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
-public class TestOptional {
+
+public class TestOptional implements  Message{
+
+    Object t;
+
+    public  TestOptional(Object t){
+        this.t = t;
+    }
+
     @Test
     public void doTestOptional(){
 
-        MxMQ<Message> mxMQ = MxMQ.getInstance();
+
+        MxMQ mxMQ = MxMQ.getInstance();
+
+        mxMQ.addPartion("testjson", new MQHandler<Message>() {
+            @Override
+            public void hand(Message message) {
+
+            }
+        });
 
         /**
          * 添加分区 无消息一直阻塞
@@ -20,7 +37,7 @@ public class TestOptional {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                System.out.println(message.getMessage());
+                System.out.println(message.getData());
             }
         });
 
@@ -35,14 +52,22 @@ public class TestOptional {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                System.out.println(message.getMessage());
+                System.out.println(message.getData());
             }
         });
 
         for(int index = 0;index < 20;index++){
             int finalIndex = index;
-            Message message = new Message("test_" + finalIndex);
-            Message message2 = new Message("test2_" + finalIndex);
+            Message message = new Message(){
+
+                @Override
+                public Object getData() {
+                    return null;
+                }
+            };
+            Message message2 = new TestOptional("test2_" + finalIndex);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("index",index);
             try {
                 mxMQ.sendMessage("test",message);
                 mxMQ.sendMessage("test2",message2);
@@ -53,5 +78,10 @@ public class TestOptional {
 
         while (true){}
 
+    }
+
+    @Override
+    public Object getData() {
+        return t;
     }
 }

@@ -3,11 +3,11 @@ package com.mx.mxmq;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-public class MxMQRunnable<T> implements Runnable{
+public class MxMQRunnable<Message> implements Runnable{
 
     boolean isRun = false;
-    ArrayBlockingQueue<T> arrayBlockingQueue = null;
-    MQHandler<T> mqHandler = null;
+    ArrayBlockingQueue<Message> arrayBlockingQueue = null;
+    MQHandler<Message> mqHandler = null;
     int state = 0;
 
     MxMQ.QueueEmpty queueEmpty = null;
@@ -16,14 +16,14 @@ public class MxMQRunnable<T> implements Runnable{
         this.queueEmpty = queueEmpty;
     }
 
-    public MxMQRunnable(MQHandler<T> mqHandler){
+    public MxMQRunnable(MQHandler<Message> mqHandler){
         isRun = true;
         arrayBlockingQueue = new ArrayBlockingQueue(50);
         this.mqHandler = mqHandler;
         state = MxMQ.STATE_WAIT;
     }
 
-    public MxMQRunnable(int number,MQHandler<T> mqHandler){
+    public MxMQRunnable(int number,MQHandler<Message> mqHandler){
         arrayBlockingQueue = new ArrayBlockingQueue(number);
         this.mqHandler = mqHandler;
         state = MxMQ.STATE_WAIT;
@@ -37,7 +37,7 @@ public class MxMQRunnable<T> implements Runnable{
     public void run() {
         while (isRun){
             try {
-                T t = null;
+                Message t = null;
                 if(state == MxMQ.STATE_WAIT){
                    t = arrayBlockingQueue.take();
                 } else {
@@ -57,11 +57,11 @@ public class MxMQRunnable<T> implements Runnable{
         }
     }
 
-    public boolean sendMessage(T t) throws InterruptedException {
+    public boolean sendMessage(Message t) throws InterruptedException {
         return arrayBlockingQueue.offer(t,20, TimeUnit.SECONDS);
     }
 
-    public boolean removeMessage(T t){
+    public boolean removeMessage(Message t){
         return arrayBlockingQueue.remove(t);
     }
 

@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MxMQ<T> {
+public class MxMQ {
 
     public static final int STATE_WAIT = 0;
     public static final int STATE_REMOVE = 1;
@@ -27,7 +27,7 @@ public class MxMQ<T> {
 
     private static volatile MxMQ instance = null;
 
-    private ConcurrentHashMap<String,MxMQRunnable<T>> partionRunMap = null;
+    private ConcurrentHashMap<String,MxMQRunnable<Message>> partionRunMap = null;
 
     private ExecutorService executors =  null;
 
@@ -37,12 +37,11 @@ public class MxMQ<T> {
      * @param mxHandler 处理器
      * @return
      */
-    public boolean addPartion(String partion,MQHandler<T> mxHandler){
+    public boolean addPartion(String partion,MQHandler<Message> mxHandler){
         if(partionRunMap.get(partion) == null){
-            MxMQRunnable<T> curMxMQRunnable = new MxMQRunnable<T>(mxHandler);
+            MxMQRunnable<Message> curMxMQRunnable = new MxMQRunnable<Message>(mxHandler);
             partionRunMap.put(partion,curMxMQRunnable);
             executors.execute(curMxMQRunnable);
-            System.out.println(partion+"被添加");
             return true;
         }
         return false;
@@ -54,9 +53,9 @@ public class MxMQ<T> {
      * @param mxHandler 处理器
      * @return
      */
-    public boolean addPartionAutoRemove(String partion,MQHandler<T> mxHandler){
+    public boolean addPartionAutoRemove(String partion,MQHandler<Message> mxHandler){
         if(partionRunMap.get(partion) == null){
-            MxMQRunnable<T> curMxMQRunnable = new MxMQRunnable<T>(mxHandler);
+            MxMQRunnable<Message> curMxMQRunnable = new MxMQRunnable<Message>(mxHandler);
             curMxMQRunnable.setState(STATE_REMOVE);
             curMxMQRunnable.setQueueEmpty(new QueueEmpty() {
                 @Override
@@ -66,7 +65,6 @@ public class MxMQ<T> {
             });
             partionRunMap.put(partion,curMxMQRunnable);
             executors.execute(curMxMQRunnable);
-            System.out.println(partion+"被添加");
             return true;
         }
         return false;
@@ -74,16 +72,15 @@ public class MxMQ<T> {
 
     public boolean removePartion(String partion){
         if(partionRunMap.get(partion) != null){
-            MxMQRunnable<T> remove = partionRunMap.remove(partion);
+            MxMQRunnable<Message> remove = partionRunMap.remove(partion);
             remove.close();
-            System.out.println(partion+"被移除");
             return true;
         }
         return false;
     }
 
-    public boolean sendMessage(String partion,T t) throws InterruptedException {
-        MxMQRunnable<T> tMxMQRunnable = partionRunMap.get(partion);
+    public boolean sendMessage(String partion,Message t) throws InterruptedException {
+        MxMQRunnable<Message> tMxMQRunnable = partionRunMap.get(partion);
         if(tMxMQRunnable != null){
             tMxMQRunnable.sendMessage(t);
             return true;
@@ -91,8 +88,8 @@ public class MxMQ<T> {
         return false;
     }
 
-    public boolean removeMessage(String partion,T t){
-        MxMQRunnable<T> tMxMQRunnable = partionRunMap.get(partion);
+    public boolean removeMessage(String partion,Message t){
+        MxMQRunnable<Message> tMxMQRunnable = partionRunMap.get(partion);
         if(tMxMQRunnable != null){
             return tMxMQRunnable.removeMessage(t);
         }
